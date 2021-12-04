@@ -11,7 +11,7 @@ module.exports = (reservationData) => {
         throw new Error('No reservation preferences provided');
     }
     return {
-        dateTime: reservationData.dateTime,
+        dateTime: new Date(reservationData.dateTime),
         preferences: reservationData.preferences,
         userId: reservationData.userId,
     }

@@ -14,6 +14,20 @@ module.exports = ({connection}) => {
             availability: true,
         }).exec();
     }
+    const setSessionParameter = async (findParameters, changeParameters) => {
+        const result = await Session.findOneAndUpdate(
+            findParameters,
+            {
+                $set: changeParameters,
+            },
+            {
+                returnNewDocument: true,
+            }
+        ).exec();
+        if (!result) {
+            throw new Error(`No session available for parameters: ${JSON.stringify(findParameters)}`);
+        }
+    }
     const insertSession = async (session) => {
         const sessionObject = new Session(session)
         await sessionObject.save();
@@ -21,5 +35,6 @@ module.exports = ({connection}) => {
     return {
         getAvailableSessions,
         insertSession,
+        setSessionParameter,
     }
 }

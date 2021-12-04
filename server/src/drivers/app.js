@@ -31,7 +31,7 @@ app.get('/free-slots', async (req, res) => {
 app.post('/reservation', async (req, res) => {
     //TODO overit token -> middleware
     const reservation = req.body;
-    await makeNewReservation(reservationRepository, reservation, mailService);
+    await makeNewReservation(reservationRepository, sessionRepository, reservation, mailService);
     res.status(204).send();
 })
 

@@ -2,7 +2,7 @@ const makeNewReservation = require('../entity/Reservation');
 const makeNewEmail = require('../entity/Email');
 const dayjs = require("dayjs");
 
-module.exports = async (reservationRepository = {}, reservationData, mailService) => {
+module.exports = async (reservationRepository = {}, sessionRepository, reservationData, mailService) => {
     if (!reservationData) {
         throw new Error('No reservation data provided');
     }
@@ -11,6 +11,14 @@ module.exports = async (reservationRepository = {}, reservationData, mailService
         preferences: reservationData.preferences,
         dateTime: reservationData.selectedDateTime,
     });
+
+    await sessionRepository.setSessionParameter({
+        dateTime: reservation.dateTime,
+        availability: true,
+    }, {
+        availability: false,
+    });
+
     await reservationRepository.insertReservation(reservation);
 
     const email = makeNewEmail({
