@@ -1,16 +1,22 @@
 const makeNewReservation = require('../entity/Reservation');
 const makeNewEmail = require('../entity/Email');
 const dayjs = require("dayjs");
+const BaseError = require('../infrastructure/errors/BaseError');
 
 module.exports = async (reservationRepository = {}, sessionRepository, reservationData, mailService) => {
-    if (!reservationData) {
-        throw new Error('No reservation data provided');
+    if (!verifyProvidedReservationData(reservationData)) {
+        throw new BaseError('BAD_REQUEST_ERROR',400, 'Provided reservation data is invalid');
     }
+
+    await verifySessionExists(sessionRepository,reservationData);
+
     const reservation = makeNewReservation({
         userId: reservationData.email,
         preferences: reservationData.preferences,
         dateTime: reservationData.selectedDateTime,
     });
+
+    await reservationRepository.insertReservation(reservation);
 
     await sessionRepository.setSessionParameter({
         dateTime: reservation.dateTime,
@@ -18,8 +24,6 @@ module.exports = async (reservationRepository = {}, sessionRepository, reservati
     }, {
         availability: false,
     });
-
-    await reservationRepository.insertReservation(reservation);
 
     const email = makeNewEmail({
         subject: "Potvrzení rezervace ✔",
@@ -31,4 +35,23 @@ module.exports = async (reservationRepository = {}, sessionRepository, reservati
         ],
     });
     await mailService.sendEmail(email);
+}
+
+const verifyProvidedReservationData = (reservationData) => {
+    if (!reservationData.selectedDateTime) return false;
+    if (!reservationData.email) return false;
+    if (!reservationData.preferences) return false;
+    return true;
+}
+
+const verifySessionExists = async (sessionRepository, reservationData) => {
+    const sessionDetails = await sessionRepository.getSessionByParameters({
+        dateTime: new Date(reservationData.selectedDateTime),
+        availability: true,
+    });
+
+    if (sessionDetails.length === 0) {
+        throw new BaseError('BAD_REQUEST_ERROR', 400, `No session available for parameters: ${JSON.stringify(reservationData)}`);
+    }
+    return true;
 }
