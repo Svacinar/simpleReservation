@@ -16,23 +16,28 @@ const sessionRepository = require('../infrastructure/data_access/mongoDb/mongoSe
 const reservationRepository = require('../infrastructure/data_access/mongoDb/mongoReservationRepository')({connection: mongoConnection});
 
 const mailService = new Mailer();
+const errorHandler = require('../infrastructure/errors/errorHandler');
 
 app.use(express.json());
 
-app.get('/free-slots', async (req, res) => {
+app.get('/free-slots', async (req, res, next) => {
     const date = req.query.date;
     if (!date) {
-        throw new Error('No date selected');
+        next('No date selected');
     }
     const result = await getAvailableSessions(sessionRepository,date);
     res.status(200).json(result);
 })
 
-app.post('/reservation', async (req, res) => {
+app.post('/reservation', async (req, res, next) => {
     //TODO overit token -> middleware
     const reservation = req.body;
-    await makeNewReservation(reservationRepository, sessionRepository, reservation, mailService);
-    res.status(204).send();
+    try {
+        await makeNewReservation(reservationRepository, sessionRepository, reservation, mailService);
+        res.status(204).send();
+    } catch (e) {
+        next(e);
+    }
 })
 
 app.post('/login', (req, res) => {
@@ -44,6 +49,20 @@ app.post('/login', (req, res) => {
         status = 403;
     }
     res.status(status).send();
+})
+
+app.use(function (err, req, res, next) {
+    errorHandler.handleError(err, res);
+})
+
+process.on('uncaughtException', err => {
+    errorHandler.handleError(err);
+    process.exit(1);
+})
+
+process.on('unhandledRejection', (reason) => {
+    errorHandler.handleError(reason);
+    throw reason;
 })
 
 module.exports = {
