@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Flex, Heading, Box } from '@chakra-ui/react'
+import { Flex } from '@chakra-ui/react'
 import dayjs from "dayjs";
 
 
@@ -23,7 +23,7 @@ const Reservation = ({ setIsFinished, setIsError }) => {
     const [saunaDateTime, setSaunaDateTime] = useState();
     const [email, setEmail] = useState();
     const [availableDates, setAvailableDates] = useState([]);
-    const [availablePreferences, setAvailablePreferences] = useState([]);
+    const [availablePreferences, setAvailablePreferences] = useState({});
     const [preferences, setPreferences] = useState({});
     const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -31,33 +31,42 @@ const Reservation = ({ setIsFinished, setIsError }) => {
         handleSelectedDate().then(() => console.log('handled change'));
     }, [saunaDate])
 
-    const spotToDateTime = (value) => {
-        const dateTime = dayjs(saunaDate).hour(value.split(':')[0]).minute(0).second(0).millisecond(0);
-        setSaunaDateTime(dateTime);
-    }
-
     const handlePreferences = ([value, isChecked]) => {
         const actualPreferences = preferences;
         actualPreferences[value] = isChecked;
-        setPreferences(actualPreferences)
+        setPreferences(actualPreferences);
     }
 
     const handleSelectedDate = async () => {
         try {
             const result = await axios.get(`/free-slots?date=${dayjs(saunaDate).format('YYYY/MM/DD')}`); //TODO better structure
-            setAvailableDates(result.data.availableSlots);
-            setAvailablePreferences(result.data.preferences);
+            const availableSlots = [];
+            const slotsPreferences = {};
+            result.data.forEach(availableSlot => {
+                const formattedDateTime = dayjs(availableSlot.dateTime).format('YYYY-MM-DD HH:mm:ss');
+                availableSlots.push(formattedDateTime);
+                slotsPreferences[formattedDateTime] = availableSlot.preferences;
+            });
+            setAvailableDates(availableSlots);
+            setAvailablePreferences(slotsPreferences);
         } catch (error) {
             setIsError(true);
         }
     }
 
     const handleConfirmation = async () => {
+        const chosenPreferences =  [];
+        Object.keys(preferences).map((preference) => {
+            if (preferences[preference]) {
+                chosenPreferences.push(preference);
+            }
+        })
+
         try {
             await axios.post('/reservation', {
                 email: email,
-                preferences: preferences,
-                dateTime: saunaDateTime,
+                preferences: chosenPreferences,
+                selectedDateTime: saunaDateTime,
             });
         } catch (error) {
             setIsError(true);
@@ -82,8 +91,8 @@ const Reservation = ({ setIsFinished, setIsError }) => {
                     startDate={startDate}
                     setSaunaDate={setSaunaDate}
                 /> : <Button leftIcon={<AddIcon />} size='lg' onClick={() => setIsStarted(true)}>Rezervovat termín</Button>}
-                {saunaDate ? <AvailableSpots saunaDate={saunaDate} saunaDateTime={saunaDateTime} spots={availableDates} onClickHandler={spotToDateTime} /> : ''}
-                {saunaDateTime ? <Preference preferences={availablePreferences} setPreferences={handlePreferences} /> : ''}
+                {saunaDate ? <AvailableSpots saunaDate={saunaDate} saunaDateTime={saunaDateTime} spots={availableDates} onClickHandler={setSaunaDateTime} /> : ''}
+                {saunaDateTime ? <Preference preferences={availablePreferences[saunaDateTime]} setPreferences={handlePreferences} /> : ''}
             </Flex >
             {isStarted ? <ConfirmButton onClickHandler={onOpen} /> : ''}
         </Flex >

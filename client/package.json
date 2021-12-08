@@ -1,7 +1,7 @@
 {
   "name": "sauna-scheduler",
   "version": "0.1.0",
-  "proxy": "http://localhost:8080/",
+  "proxy": "http://localhost:8081/",
   "private": true,
   "dependencies": {
     "@chakra-ui/icons": "^1.1.1",
