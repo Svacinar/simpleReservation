@@ -1,9 +1,16 @@
-module.exports = async (sessionRepository = {}, selectedDate) => {
-    function isValidDate(selectedDate) {
+module.exports = async (sessionRepository = {}, dateRange = {}) => {
+    function isValidDate(dateRange) {
+        if (!dateRange.from) {
+            throw new Error('From date is required');
+        }
+        // TODO validation
+        Object.values(dateRange).forEach(date => console.log(date));
         return true;
     }
-    if (!isValidDate(selectedDate)) {
-        throw new Error("Selected date is not a valid date");
+    if (!isValidDate(dateRange)) {
+        throw new Error("Selected dates in range are not valid dates.");
     }
-    return await sessionRepository.getAvailableSessions(selectedDate);
+    const fromDate = dateRange.from;
+    const toDate = dateRange.to || dateRange.from;
+    return await sessionRepository.getAvailableSessions(fromDate, toDate);
 }

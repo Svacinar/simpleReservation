@@ -21,12 +21,22 @@ const errorHandler = require('../infrastructure/errors/errorHandler');
 app.use(express.json());
 
 app.get('/free-slots', async (req, res, next) => {
-    const date = req.query.date;
-    if (!date) {
+    const fromDate = req.query.from;
+    const toDate = req.query.to;
+    if (!fromDate) {
         next('No date selected');
     }
-    const result = await getAvailableSessions(sessionRepository,date);
-    res.status(200).json(result);
+    try {
+        const result = await getAvailableSessions(sessionRepository,{
+            from: fromDate,
+            to: toDate,
+        });
+        res.status(200).json(result);
+    }
+    catch (e) {
+        next(e);
+    }
+
 })
 
 app.post('/reservation', async (req, res, next) => {

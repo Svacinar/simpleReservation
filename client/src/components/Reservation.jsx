@@ -19,17 +19,22 @@ import axios from 'axios';
 const Reservation = ({ setIsFinished, setIsError }) => {
     const [isStarted, setIsStarted] = useState(false);
     const [startDate, setStartDate] = useState(new Date());
-    const [saunaDate, setSaunaDate] = useState();
-    const [saunaDateTime, setSaunaDateTime] = useState();
+    const [selectedDate, setSelectedDate] = useState();
+    const [selectedSpotDateTime, setSelectedSpotDateTime] = useState();
     const [email, setEmail] = useState();
-    const [availableDates, setAvailableDates] = useState([]);
+    const [availableSlotsForDay, setAvailableSlotsForDay] = useState([]);
     const [availablePreferences, setAvailablePreferences] = useState({});
     const [preferences, setPreferences] = useState({});
+    const [availableDates, setAvailableDates] = useState([]);
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     useEffect(() => {
         handleSelectedDate().then(() => console.log('handled change'));
-    }, [saunaDate])
+    }, [selectedDate])
+
+    useEffect(() => {
+        loadAvailableDatesForMonths().then(console.log('data loaded'))
+    }, [])
 
     const handlePreferences = ([value, isChecked]) => {
         const actualPreferences = preferences;
@@ -37,9 +42,20 @@ const Reservation = ({ setIsFinished, setIsError }) => {
         setPreferences(actualPreferences);
     }
 
+    const loadAvailableDatesForMonths = async (monthsToLoad = 2) => {
+        const result = await axios.get(`/free-slots?from=${dayjs().format('YYYY/MM/DD')}&to=${dayjs().add(monthsToLoad, 'M').format('YYYY/MM/DD')}`);
+        const availableDates = [];
+        result.data.forEach(date => {
+            const formattedDateTime = new Date(date.dateTime);
+            availableDates.push(formattedDateTime);
+        });
+        setAvailableDates(availableDates);
+    }
+
     const handleSelectedDate = async () => {
         try {
-            const result = await axios.get(`/free-slots?date=${dayjs(saunaDate).format('YYYY/MM/DD')}`); //TODO better structure
+            // TODO po pridani metody loadAvailableDatesForMonth je novy get zbytecny -> odstranit, implementova caching
+            const result = await axios.get(`/free-slots?from=${dayjs(selectedDate).format('YYYY/MM/DD')}`); //TODO better structure
             const availableSlots = [];
             const slotsPreferences = {};
             result.data.forEach(availableSlot => {
@@ -47,7 +63,7 @@ const Reservation = ({ setIsFinished, setIsError }) => {
                 availableSlots.push(formattedDateTime);
                 slotsPreferences[formattedDateTime] = availableSlot.preferences;
             });
-            setAvailableDates(availableSlots);
+            setAvailableSlotsForDay(availableSlots);
             setAvailablePreferences(slotsPreferences);
         } catch (error) {
             setIsError(true);
@@ -56,7 +72,7 @@ const Reservation = ({ setIsFinished, setIsError }) => {
 
     const handleConfirmation = async () => {
         const chosenPreferences =  [];
-        Object.keys(preferences).map((preference) => {
+        Object.keys(preferences).forEach((preference) => {
             if (preferences[preference]) {
                 chosenPreferences.push(preference);
             }
@@ -66,7 +82,7 @@ const Reservation = ({ setIsFinished, setIsError }) => {
             await axios.post('/reservation', {
                 email: email,
                 preferences: chosenPreferences,
-                selectedDateTime: saunaDateTime,
+                selectedDateTime: selectedSpotDateTime,
             });
         } catch (error) {
             setIsError(true);
@@ -80,7 +96,7 @@ const Reservation = ({ setIsFinished, setIsError }) => {
             <RecapModal
                 isOpen={isOpen}
                 onClose={onClose}
-                saunaDateTime={saunaDateTime}
+                saunaDateTime={selectedSpotDateTime}
                 email={email}
                 setEmail={setEmail}
                 preferences={preferences}
@@ -89,12 +105,13 @@ const Reservation = ({ setIsFinished, setIsError }) => {
             <Flex alignItems="center" direction="row" p={6} >
                 {isStarted ? <DateSelector
                     startDate={startDate}
-                    setSaunaDate={setSaunaDate}
+                    setSaunaDate={setSelectedDate}
+                    availableDates={availableDates}
                 /> : <Button leftIcon={<AddIcon />} size='lg' onClick={() => setIsStarted(true)}>Rezervovat termín</Button>}
-                {saunaDate ? <AvailableSpots saunaDate={saunaDate} saunaDateTime={saunaDateTime} spots={availableDates} onClickHandler={setSaunaDateTime} /> : ''}
-                {saunaDateTime ? <Preference preferences={availablePreferences[saunaDateTime]} setPreferences={handlePreferences} /> : ''}
+                {selectedDate ? <AvailableSpots saunaDate={selectedDate} saunaDateTime={selectedSpotDateTime} spots={availableSlotsForDay} onClickHandler={setSelectedSpotDateTime} /> : ''}
+                {selectedSpotDateTime ? <Preference preferences={availablePreferences[selectedSpotDateTime]} setPreferences={handlePreferences} /> : ''}
             </Flex >
-            {isStarted ? <ConfirmButton onClickHandler={onOpen} /> : ''}
+            {selectedSpotDateTime ? <ConfirmButton onClickHandler={onOpen} /> : ''}
         </Flex >
     );
 }

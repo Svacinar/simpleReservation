@@ -1,5 +1,4 @@
 module.exports = (reservationData) => {
-    console.log(reservationData);
     if (!reservationData) {
         throw new Error('No data provided');
     }

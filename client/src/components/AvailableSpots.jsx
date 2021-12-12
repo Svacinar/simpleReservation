@@ -19,7 +19,6 @@ function AvailableSpots(props) {
             </>
         )
     }
-
     return (
         <Box h="100%" m={4} p={4} boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2)">
             <Heading p={2} size='sm'>

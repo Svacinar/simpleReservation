@@ -2,9 +2,9 @@ const makeSession = require('./models/session');
 
 module.exports = ({connection}) => {
     const Session = makeSession(connection);
-    const getAvailableSessions = async (selectedDate) => {
-        const dateTime = new Date(selectedDate);
-        const nextDay = new Date(selectedDate);
+    const getAvailableSessions = async (fromDate, toDate) => {
+        const dateTime = new Date(fromDate);
+        const nextDay = new Date(toDate);
         nextDay.setDate(nextDay.getDate() + 1);
         return await Session.find({
             dateTime: {
