@@ -1,6 +1,7 @@
 const express = require('express');
 
 const app = express();
+const path = require('path');
 
 const Mailer = require('../infrastructure/mailing/nodeMailer');
 const DatabaseConnection = require('../infrastructure/data_access/mongoDb/mongoConnection');
@@ -19,6 +20,8 @@ const mailService = new Mailer();
 const errorHandler = require('../infrastructure/errors/errorHandler');
 
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, '../../../client/build/'))); // TODO testing?
 
 app.get('/free-slots', async (req, res, next) => {
     const fromDate = req.query.from;
