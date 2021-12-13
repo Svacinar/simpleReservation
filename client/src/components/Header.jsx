@@ -1,24 +1,13 @@
 import { useState } from 'react';
-import { Flex, Box, Text, Link, Heading } from '@chakra-ui/react';
+import { Button, Flex, Box, Heading, Menu, MenuButton } from '@chakra-ui/react';
 import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
-
-const MenuItem = ({ children, isLast, to = '/' }) => {
-    return (
-        <Text
-            mb={{ base: isLast ? 0 : 8, sm: 0 }}
-            mr={{ base: 0, sm: isLast ? 0 : 8 }}
-            _hover={{ backgroundColor: 'teal', rounded: '6px' }}
-            display="block"
-            padding="15px"
-        >
-            <Link href={to}>{children}</Link>
-        </Text>
-    );
-};
+import {useDisclosure} from "@chakra-ui/hooks";
+import AboutModal from "./AboutModal";
 
 const Header = (props) => {
     const [show, setShow] = useState(false);
     const toggleMenu = () => setShow(!show);
+    const { isOpen, onOpen, onClose } = useDisclosure();
     return (
         <Flex
             mb={8}
@@ -31,6 +20,7 @@ const Header = (props) => {
             borderBottom="3px solid black"
             textTransform="uppercase"
         >
+            <AboutModal isOpen={isOpen} onClose={onClose}/>
             <Box>
                 <Heading fontSize="2rem" transform="skew(-14deg)" fontWeight="bold">
                     Sauna Reservation
@@ -52,9 +42,12 @@ const Header = (props) => {
                     pt={[4, 4, 0, 0]}
                     onClick={toggleMenu}
                 >
-                    <MenuItem to="/about" isLast>
-                        About
-                    </MenuItem>
+                    <Menu>
+
+                        <MenuButton as={Button} onClick={onOpen}>
+                            Help
+                        </MenuButton>
+                    </Menu>
                 </Flex>
             </Box>
         </Flex>
