@@ -1,5 +1,5 @@
 import {
-    Box, Stack, Link, Text, Button, Checkbox, Heading,
+    Box, Stack, Text, Checkbox, Heading,
 } from '@chakra-ui/react';
 function AvailableSpots(props) {
     const { preferences, setPreferences } = props;
