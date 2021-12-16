@@ -13,6 +13,8 @@ const mongoConnection = new DatabaseConnection({
 
 const getAvailableSessions = require('../use_case/getAvailableSessions');
 const makeNewReservation = require('../use_case/makeNewReservation');
+const getReservationsForUser = require('../use_case/getReservationsForUser');
+
 const sessionRepository = require('../infrastructure/data_access/mongoDb/mongoSessionRepository')({connection: mongoConnection});
 const reservationRepository = require('../infrastructure/data_access/mongoDb/mongoReservationRepository')({connection: mongoConnection});
 
@@ -51,6 +53,12 @@ app.post('/reservation', async (req, res, next) => {
     } catch (e) {
         next(e);
     }
+})
+
+app.get('/reservation', async (req, res) => {
+    //TODO verify userId
+    const reservations = await getReservationsForUser(reservationRepository, req.query.userId)
+    res.status(200).json(reservations);
 })
 
 app.post('/login', (req, res) => {
