@@ -1,5 +1,5 @@
 import {Flex, Heading} from "@chakra-ui/react";
-import Reservation from "../components/Reservation";
+import Reservation from "../components/pages/newReservation/Reservation";
 import {useState} from "react";
 
 const MainPage = (props) => {

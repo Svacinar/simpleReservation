@@ -1,4 +1,4 @@
-import Header from "./components/Header";
+import Header from "./components/UI/Header";
 
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import PreviousReservations from "./routes/PreviousReservations";

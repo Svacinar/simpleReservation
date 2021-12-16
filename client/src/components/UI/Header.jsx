@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {useDisclosure} from "@chakra-ui/hooks";
-import AboutModal from "./AboutModal";
+import AboutModal from "../modals/AboutModal";
 import Logo from "./Logo";
 import { HeaderContainer, MenuLinks, MenuComponents } from "./MenuComponents";
 
