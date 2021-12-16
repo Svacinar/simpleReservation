@@ -1,4 +1,4 @@
-import React from "react"
+import React, {useState} from "react"
 import {Box, Button, Flex, Menu, MenuButton, Stack, Text} from "@chakra-ui/react"
 
 import { Link } from "react-router-dom"
@@ -12,10 +12,21 @@ const MenuComponents = ({ toggle, isOpen }) => {
         </Box>
     )
 }
+
 const MenuItem = ({ children, isLast, to = "/", ...rest }) => {
+    const [hover, setHover] = useState(false);
+    const style = {
+        size:"8px",
+        padding: "6px",
+        marginRight: "12px",
+        border: "2px solid rgb(237, 242, 247)",
+        background: hover ? "rgb(237, 242, 247)" : '',
+        borderRadius: "5px",
+        transition: "0.3s",
+    }
     return (
-        <Link to={to}>
-            <Text display="block" {...rest}>
+        <Link to={to} onMouseEnter={() => setHover(!hover)} onMouseLeave={() => setHover(!hover)}>
+            <Text  display="block" style={style} {...rest}>
                 {children}
             </Text>
         </Link>
@@ -31,7 +42,7 @@ const MenuLinks = (props) => {
              direction={["column", "row", "row", "row"]}
              pt={[4, 4, 8, 0]}
          >
-             <MenuItem to="/" isLast>Nová rezervace</MenuItem>
+             <MenuItem to="/">Nová rezervace</MenuItem>
              <MenuItem to="/my-reservations" isLast>Předchozí rezervace</MenuItem>
              <Menu>
                  <MenuButton as={Button} onClick={onOpen}>
