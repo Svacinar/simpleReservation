@@ -14,9 +14,14 @@ const mongoConnection = new DatabaseConnection({
 const getAvailableSessions = require('../use_case/getAvailableSessions');
 const makeNewReservation = require('../use_case/makeNewReservation');
 const getReservationsForUser = require('../use_case/getReservationsForUser');
+const loginUser = require('../use_case/loginUser')
 
 const sessionRepository = require('../infrastructure/data_access/mongoDb/mongoSessionRepository')({connection: mongoConnection});
 const reservationRepository = require('../infrastructure/data_access/mongoDb/mongoReservationRepository')({connection: mongoConnection});
+const userRepository = require('../infrastructure/data_access/mongoDb/mongoUserRepository')({connection: mongoConnection})
+
+const cryptography = require('../infrastructure/cryptography/cryptography')()
+
 
 const mailService = new Mailer();
 const errorHandler = require('../infrastructure/errors/errorHandler');
@@ -61,15 +66,21 @@ app.get('/reservation', async (req, res) => {
     res.status(200).json(reservations);
 })
 
-app.post('/login', (req, res) => {
-    //TODO login komponent - sprava rezervaci
-    const userToken = req.body.token;
-    const result = true; // TODO token verifikator (db call);
-    let status = 200;
-    if (!result) {
-        status = 403;
+app.post('/login', async (req, res, next) => {
+    const {username, password} = req.body;
+    try {
+        const user = await loginUser({
+            userRepository,
+            crypto: cryptography,
+            rawUser: {
+                username,
+                password,
+            }
+        });
+        res.send(user.getLoginToken())
+    } catch (e) {
+        next(e);
     }
-    res.status(status).send();
 })
 
 app.use(function (err, req, res, next) {
