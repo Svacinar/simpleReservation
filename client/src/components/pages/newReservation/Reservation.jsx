@@ -23,7 +23,7 @@ const Reservation = ({ setIsFinished, setIsError }) => {
     const [startDate, setStartDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState();
     const [selectedSpotDateTime, setSelectedSpotDateTime] = useState();
-    const [email, setEmail] = useState(user.username);
+    const [email, setEmail] = useState(user ? user.username : '');
     const [availableSlotsForDay, setAvailableSlotsForDay] = useState([]);
     const [availablePreferences, setAvailablePreferences] = useState({});
     const [preferences, setPreferences] = useState({});

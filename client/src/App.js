@@ -9,13 +9,13 @@ function App() {
     return (
             <AuthProvider>
                 <BrowserRouter>
-                <Header />
-                <Routes>
-                    <Route path="/" element={<MainPage />} />
-                    <Route path="/my-reservations" element={<PreviousReservations />} />
-                    <Route path="*" component={() => <h2>404 Not Found </h2>} />
-                </Routes>
-            </BrowserRouter>
+                    <Header />
+                    <Routes>
+                        <Route path="/" element={<MainPage />} />
+                        <Route path="/my-reservations" element={<PreviousReservations />} />
+                        <Route path="*" component={() => <h2>404 Not Found </h2>} />
+                    </Routes>
+                </BrowserRouter>
             </AuthProvider>
     );
 }
