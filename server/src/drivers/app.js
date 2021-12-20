@@ -15,6 +15,7 @@ const getAvailableSessions = require('../use_case/getAvailableSessions');
 const makeNewReservation = require('../use_case/makeNewReservation');
 const getReservationsForUser = require('../use_case/getReservationsForUser');
 const loginUser = require('../use_case/loginUser')
+const deleteReservation  = require('../use_case/deleteReservation')
 
 const sessionRepository = require('../infrastructure/data_access/mongoDb/mongoSessionRepository')({connection: mongoConnection});
 const reservationRepository = require('../infrastructure/data_access/mongoDb/mongoReservationRepository')({connection: mongoConnection});
@@ -81,6 +82,12 @@ app.post('/login', async (req, res, next) => {
     } catch (e) {
         next(e);
     }
+})
+
+app.delete('/reservation/:id', verifyToken, async (req, res, next) => {
+    const reservationId = req.params.id
+    await deleteReservation(reservationId, reservationRepository, sessionRepository, mailService);
+    res.status(204).send();
 })
 
 app.use(function (err, req, res, next) {

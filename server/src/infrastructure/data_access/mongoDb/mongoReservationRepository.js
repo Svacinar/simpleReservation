@@ -15,9 +15,21 @@ module.exports = ({connection}) => {
             userId: userId,
         }).exec();
     }
+    const getReservationBy = async (reservationId) => {
+        return await ReservationModel.find({
+            _id: reservationId,
+        }).exec();
+    }
+    const deleteReservation = async (reservationId) => {
+        return await ReservationModel.deleteOne({
+            _id: reservationId,
+        }).exec();
+    }
     return {
         getAllReservations,
         insertReservation,
         getReservationsForUser,
+        getReservationBy,
+        deleteReservation,
     }
 }
