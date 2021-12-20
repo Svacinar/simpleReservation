@@ -9,7 +9,7 @@ function RecapModal(props) {
             <ModalContent p={6}>
                 <ModalHeader textAlign='center' >Vaše rezervace</ModalHeader>
                 <Text textAlign='center' >Zvolené datum: {saunaDateTime}</Text>
-                <Input mt={3} type='email' placeholder="Váš email" onChange={(e) => setEmail(e.target.value)} />
+                <Input mt={3} value={email} type='email' placeholder="Váš email" onChange={(e) => setEmail(e.target.value)} />
                 <ModalCloseButton />
                 <Button
                     mt={3}

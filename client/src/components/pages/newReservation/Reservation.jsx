@@ -15,13 +15,15 @@ import { AddIcon } from '@chakra-ui/icons';
 import { useDisclosure } from "@chakra-ui/hooks";
 
 import axios from 'axios';
+import {useAuth} from "../../context/auth-context";
 
 const Reservation = ({ setIsFinished, setIsError }) => {
+    const {user} = useAuth()
     const [isStarted, setIsStarted] = useState(false);
     const [startDate, setStartDate] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState();
     const [selectedSpotDateTime, setSelectedSpotDateTime] = useState();
-    const [email, setEmail] = useState();
+    const [email, setEmail] = useState(user.username);
     const [availableSlotsForDay, setAvailableSlotsForDay] = useState([]);
     const [availablePreferences, setAvailablePreferences] = useState({});
     const [preferences, setPreferences] = useState({});
