@@ -7,7 +7,7 @@ module.exports = buildMakeUser = ({}) => {
         loginToken = null
     }) => {
         if (!username) throw new Error('No username set');
-        if (!password) throw new Error('No password set');
+        //if (!password) throw new Error('No password set');
         return Object.freeze({
             getUsername: () => username,
             getPassword: () => password,

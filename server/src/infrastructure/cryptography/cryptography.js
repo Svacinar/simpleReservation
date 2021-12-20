@@ -15,9 +15,13 @@ module.exports = () => {
     const hash = async (password, salt = 12) => {
         return bcrypt.hash(password, salt);
     }
+    const decode = async (token) => {
+        return jwt.verify(token, process.env.JWTPRIVATEKEY)
+    }
     return Object.freeze({
         generateAuthToken,
         compare,
         hash,
+        decode,
     })
 }

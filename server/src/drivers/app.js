@@ -21,7 +21,7 @@ const reservationRepository = require('../infrastructure/data_access/mongoDb/mon
 const userRepository = require('../infrastructure/data_access/mongoDb/mongoUserRepository')({connection: mongoConnection})
 
 const cryptography = require('../infrastructure/cryptography/cryptography')()
-
+const verifyToken = require('../drivers/middleware/verifyToken')(cryptography);
 
 const mailService = new Mailer();
 const errorHandler = require('../infrastructure/errors/errorHandler');
@@ -46,7 +46,6 @@ app.get('/free-slots', async (req, res, next) => {
     catch (e) {
         next(e);
     }
-
 })
 
 app.post('/reservation', async (req, res, next) => {
@@ -60,9 +59,8 @@ app.post('/reservation', async (req, res, next) => {
     }
 })
 
-app.get('/reservation', async (req, res) => {
-    //TODO verify userId
-    const reservations = await getReservationsForUser(reservationRepository, req.query.userId)
+app.get('/reservation', verifyToken, async (req, res) => {
+    const reservations = await getReservationsForUser(reservationRepository, req.user);
     res.status(200).json(reservations);
 })
 
@@ -77,7 +75,9 @@ app.post('/login', async (req, res, next) => {
                 password,
             }
         });
-        res.send(user.getLoginToken())
+        res.send({
+            token: user.getLoginToken()
+        })
     } catch (e) {
         next(e);
     }

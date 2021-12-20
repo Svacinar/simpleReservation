@@ -26,7 +26,7 @@ module.exports = async ({
     const token = await crypto.generateAuthToken({
         username: userDetails.username,
         isAdmin: userDetails.isAdmin,
-        roles: 'test',
+        roles: 'test', //TODO add real roles
     });
     return makeUser({
         username: userDetails.username,
@@ -36,5 +36,3 @@ module.exports = async ({
         loginToken: token,
     });
 }
-
-// TODO
