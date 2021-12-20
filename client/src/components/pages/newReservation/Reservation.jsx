@@ -58,6 +58,8 @@ const Reservation = ({ setIsFinished, setIsError }) => {
         try {
             // TODO po pridani metody loadAvailableDatesForMonth je novy get zbytecny -> odstranit, implementova caching
             const result = await axios.get(`/free-slots?from=${dayjs(selectedDate).format('YYYY/MM/DD')}`); //TODO better structure
+            setPreferences({})
+            setSelectedSpotDateTime(null)
             const availableSlots = [];
             const slotsPreferences = {};
             result.data.forEach(availableSlot => {
