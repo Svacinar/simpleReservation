@@ -1,12 +1,18 @@
-import {Flex} from "@chakra-ui/react";
+import {useAuth} from "../components/context/auth-context";
+import Login from "../components/pages/login/Login";
+import ReservationsList from "../components/pages/reservationManagement/ReservationsList";
+import {useEffect} from "react";
+
 
 const PreviousReservations = (props) => {
-    return (
-        <main style={{padding: "1rem 0"}}>
-            <Flex justifyContent={"center"}>
-                <h2>TODO List of previous Reservations</h2>
-            </Flex>
-        </main>
-    )
+    const {user, isError, decodeToken} = useAuth();
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        if (token) decodeToken(token)
+    }, [])
+
+    if (isError) alert('Bad credentials, please try again')
+
+    return user ? <ReservationsList /> : <Login />
 }
 export default PreviousReservations
