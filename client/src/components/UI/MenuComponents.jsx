@@ -34,22 +34,27 @@ const MenuItem = ({ children, isLast, to = "/", ...rest }) => {
 }
 
 const MenuLinks = (props) => {
-    const {onOpen} = props;
+    const {onOpen, isOpen} = props;
      return (
-         <Stack
-             align="center"
-             justify={["center", "space-between", "flex-end", "flex-end"]}
-             direction={["column", "row", "row", "row"]}
-             pt={[4, 4, 8, 0]}
+         <Box
+             display={{ base: isOpen ? "block" : "none", md: "block" }}
+             flexBasis={{ base: "100%", md: "auto" }}
          >
-             <MenuItem to="/">Nová rezervace</MenuItem>
-             <MenuItem to="/my-reservations" isLast>Předchozí rezervace</MenuItem>
-             <Menu>
-                 <MenuButton as={Button} onClick={onOpen}>
-                     Pomoc
-                 </MenuButton>
-             </Menu>
-         </Stack>
+             <Stack
+                 align="center"
+                 justify={["center", "space-between", "flex-end", "flex-end"]}
+                 direction={["column", "row", "row", "row"]}
+                 pt={[4, 4, 8, 0]}
+             >
+                 <MenuItem to="/">Nová rezervace</MenuItem>
+                 <MenuItem to="/my-reservations" isLast>Předchozí rezervace</MenuItem>
+                 <Menu>
+                     <MenuButton as={Button} onClick={onOpen}>
+                         Pomoc
+                     </MenuButton>
+                 </Menu>
+             </Stack>
+         </Box>
      )
 }
 

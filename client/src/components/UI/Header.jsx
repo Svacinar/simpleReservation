@@ -12,7 +12,7 @@ const Header = (props) => {
         <HeaderContainer {...props}>
             <Logo />
             <MenuComponents toggle={toggleMenu} isOpen={showHeader}/>
-            <MenuLinks onOpen={onOpen}/>
+            <MenuLinks isOpen={showHeader} onOpen={onOpen}/>
             <AboutModal isOpen={isOpen} onClose={onClose}/>
         </HeaderContainer>
     );

@@ -4,7 +4,7 @@ import {
 function AvailableSpots(props) {
     const { preferences, setPreferences } = props;
     return (
-        <Box h="100%" m={2} p={4} boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2)">
+        <Box w={["300px", "300px", "300px"]} h={["300px", "300px", "300px"]} m={2} p={4} boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2)">
             <Stack
                 align={{ base: "center", md: "stretch" }}
                 textAlign={{ base: "center", md: "left" }}

@@ -6,7 +6,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 function DateSelector(props) {
     const {availableDates,startDate, setSaunaDate } = props;
     return (
-        <Box h="100%" m={2} p={4} boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2)">
+        <Box w={["300px", "300px", "300px"]} h={["300px", "300px", "300px"]} m={2} p={4} boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2)">
             <Heading p={2} size='sm'>Vyberte datum</Heading>
             <DatePicker
                 boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2)"

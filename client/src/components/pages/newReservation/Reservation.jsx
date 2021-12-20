@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Flex } from '@chakra-ui/react'
+import {Flex, Stack} from '@chakra-ui/react'
 import dayjs from "dayjs";
 
 
@@ -96,7 +96,7 @@ const Reservation = ({ setIsFinished, setIsError }) => {
     }
 
     return (
-        <Flex height="80vh" alignItems="center" justifyContent="center" direction='column'>
+        <Flex height="80vh" alignItems="center" justifyContent="initial" direction='column'>
             <RecapModal
                 isOpen={isOpen}
                 onClose={onClose}
@@ -106,15 +106,21 @@ const Reservation = ({ setIsFinished, setIsError }) => {
                 preferences={preferences}
                 onClickHandler={handleConfirmation}
             />
-            <Flex alignItems="center" direction="row" p={6} >
+            <Stack
+                spacing={8}
+                align="center"
+                justify={["center", "center", "flex-end", "flex-end"]}
+                direction={["column", "column", "row", "row"]}
+                pt={[4, 4, 0, 0]}
+            >
                 {isStarted ? <DateSelector
                     startDate={startDate}
                     setSaunaDate={setSelectedDate}
                     availableDates={availableDates}
                 /> : <Button leftIcon={<AddIcon />} size='lg' onClick={() => setIsStarted(true)}>Rezervovat termín</Button>}
                 {selectedDate ? <AvailableSpots saunaDate={selectedDate} saunaDateTime={selectedSpotDateTime} spots={availableSlotsForDay} onClickHandler={setSelectedSpotDateTime} /> : ''}
-                {selectedSpotDateTime ? <Preference preferences={availablePreferences[selectedSpotDateTime]} setPreferences={handlePreferences} /> : ''}
-            </Flex >
+                {selectedSpotDateTime ? <Preference height="100%" preferences={availablePreferences[selectedSpotDateTime]} setPreferences={handlePreferences} /> : ''}
+            </Stack >
             {selectedSpotDateTime ? <ConfirmButton onClickHandler={onOpen} /> : ''}
         </Flex >
     );
