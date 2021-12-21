@@ -5,7 +5,7 @@
   "main": "server.js",
   "homepage": ".",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node server.js"
   },
   "author": "",
@@ -19,5 +19,8 @@
     "mongodb": "^4.2.0",
     "mongoose": "^6.0.13",
     "nodemailer": "^6.7.1"
+  },
+  "devDependencies": {
+    "jest": "^27.4.5"
   }
 }

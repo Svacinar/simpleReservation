@@ -1,4 +1,4 @@
-const buildMakeUser = require('../entity/User');
+const {buildMakeUser} = require('../entity/User');
 
 module.exports = async (
     {

@@ -21,7 +21,7 @@ const sessionRepository = require('../infrastructure/data_access/mongoDb/mongoSe
 const reservationRepository = require('../infrastructure/data_access/mongoDb/mongoReservationRepository')({connection: mongoConnection});
 const userRepository = require('../infrastructure/data_access/mongoDb/mongoUserRepository')({connection: mongoConnection})
 
-const cryptography = require('../infrastructure/cryptography/cryptography')()
+const cryptography = require('../infrastructure/cryptography/cryptography')(process.env.JWTPRIVATEKEY)
 const verifyToken = require('../drivers/middleware/verifyToken')(cryptography);
 
 const mailService = new Mailer();
