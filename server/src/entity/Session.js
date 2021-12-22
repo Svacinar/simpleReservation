@@ -1,17 +1,18 @@
-module.exports = (reservationData) => {
-    if (!reservationData) {
+const makeSession = (sessionData) => {
+    if (!sessionData) {
         throw new Error('No data provided');
     }
     // TODO meaningful validation logic
-    if (reservationData.dateTime) {
+    if (!sessionData.dateTime) {
         throw new Error('No date provided');
     }
-    if (reservationData.preferences) {
-        throw new Error('No reservation preferences provided');
-    }
     return {
-        dateTime: reservationData.dateTime,
-        preferences: reservationData.preferences,
-        userId: reservationData.userId,
+        dateTime: sessionData.dateTime,
+        preferences: sessionData.preferences || [],
+        availability: sessionData.availability || true,
     }
+}
+
+module.exports = {
+    makeSession,
 }

@@ -26,6 +26,7 @@ const verifyToken = require('../drivers/middleware/verifyToken')(cryptography);
 
 const mailService = new Mailer();
 const errorHandler = require('../infrastructure/errors/errorHandler');
+const {addNewSession} = require("../use_case/addNewSession");
 
 app.use(express.json());
 
@@ -45,6 +46,19 @@ app.get('/free-slots', async (req, res, next) => {
         res.status(200).json(result);
     }
     catch (e) {
+        next(e);
+    }
+})
+
+app.post('/session', verifyToken, async (req, res, next) => {
+    try {
+        await addNewSession({
+            sessionData: req.body.session,
+            user: req.user,
+            sessionRepository,
+        });
+        res.status(204).send()
+    } catch (e) {
         next(e);
     }
 })
