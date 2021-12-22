@@ -90,6 +90,10 @@ app.delete('/reservation/:id', verifyToken, async (req, res, next) => {
     res.status(204).send();
 })
 
+app.get('*', (req, res) => {
+    res.redirect('/');
+});
+
 app.use(function (err, req, res, next) {
     errorHandler.handleError(err, res);
 })
