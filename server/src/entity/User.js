@@ -1,5 +1,8 @@
 const buildMakeUser = ({crypto}) => {
-    const hashPassword = async (password) => await crypto.hash(password);
+    const hashPassword = async (password) => {
+        if (!validatePassword(password)) throw new Error('Password not valid');
+        await crypto.hash(password)
+    };
     return makeUser = async ({
         username,
         password = null,
@@ -7,7 +10,6 @@ const buildMakeUser = ({crypto}) => {
         isLoggedIn = false, //TODO guestUser
     } = {}) => {
         if (!username) throw new Error('No username set');
-        if (!validatePassword(password)) throw new Error('Password not valid');
         const loginToken = await crypto.generateAuthToken({
             username: username,
             isAdmin: isAdmin,

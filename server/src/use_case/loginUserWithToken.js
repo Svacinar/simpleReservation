@@ -6,7 +6,7 @@ module.exports = async (
         token,
     }) => {
     if (!token) throw new Error('No token provided')
-    const makeUser = buildMakeUser(crypto)
+    const makeUser = buildMakeUser({crypto})
     const decode = await crypto.decode(token);
     return makeUser({
         username: decode.username,
