@@ -1,4 +1,5 @@
-module.exports = (data) => {
+const makeNewEmail = (data) => {
+    //TODO check jestli je email OK -> entita email
     const sender = data.sender;
     const receiver = data.receiver;
     const subject = data.subject;
@@ -10,4 +11,8 @@ module.exports = (data) => {
         subject,
         text,
     }
+}
+
+module.exports = {
+    makeNewEmail,
 }

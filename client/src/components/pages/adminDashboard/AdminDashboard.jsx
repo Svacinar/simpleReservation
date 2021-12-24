@@ -17,6 +17,8 @@ import {useEffect, useState} from "react";
 import dayjs from "dayjs";
 import {CloseIcon, EmailIcon} from "@chakra-ui/icons";
 import {useAuth} from "../../context/auth-context";
+import EmailModal from "../../modals/EmailModal";
+import {useDisclosure} from "@chakra-ui/hooks";
 
 const AdminDashboard = (props) => {
     const {logout} = useAuth()
@@ -27,6 +29,11 @@ const AdminDashboard = (props) => {
     const [allSessions, setAllSessions] = useState([])
     const [newSlot, setNewSlot] = useState(new Date())
     const [newSlotPreference, setNewSlotPreference] = useState('')
+
+    const [email, setEmail] = useState();
+    const [emailHeader, setEmailHeader] = useState()
+    const [emailText, setEmailText] = useState()
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const getReservations = () => {
         axios.get('/reservation', {
@@ -80,13 +87,13 @@ const AdminDashboard = (props) => {
         getSessions();
     }, [reload]);
 
-    async function sendEmail(_id) {
-        //TODO
-        console.log('poslat email')
-        return Promise.resolve(undefined);
-    }
+    const sendEmail = (_id, email) => {
+        setEmailHeader('Zpráva o rezervaci ' + _id);
+        setEmail(email)
+        onOpen();
+    };
 
-    async function handleNewSlotButton() {
+    const handleNewSlotButton = async () => {
         await axios.post('/session', {
             session: {
                 dateTime: newSlot,
@@ -99,9 +106,9 @@ const AdminDashboard = (props) => {
         })
         alert('Termín úspěšně vytvořen')
         setReload(true)
-    }
+    };
 
-    async function cancelSession(sessionId) {
+    const cancelSession = async sessionId => {
         setIsWorking(true);
         await axios.delete('session/' + sessionId, {
             headers: {
@@ -111,10 +118,35 @@ const AdminDashboard = (props) => {
         setIsWorking(false);
         alert('Termín byla zrušen');
         setReload(true)
-    }
+    };
+
+    const handleEmailSend = async () => {
+        await axios.post('/email', {
+            emailData: {
+                email: email,
+                subject: emailHeader,
+                text: emailText,
+            }
+        }, {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        })
+        onClose()
+    };
 
     return (
         <main style={{padding: "1rem 0"}}>
+            <EmailModal
+                isOpen={isOpen}
+                onClose={onClose}
+                email={email}
+                setEmail={setEmail}
+                subject={emailHeader}
+                setSubject={setEmailHeader}
+                setText={setEmailText}
+                onClickHandler={handleEmailSend}
+            />
             <Stack justifyContent='center'>
                 <Grid p={5} justifyContent="center" alignItems='flex-end' templateColumns='repeat(3, 1fr)' gap={6} borderBottom='1px solid black'>
                     <Spacer/>
@@ -167,7 +199,7 @@ const AdminDashboard = (props) => {
                                                     onClick={async () => await cancelReservation(reservation._id)}/></Td>
                                     <Td><IconButton isLoading={isWorking} aria-label='Send email'
                                                     icon={<EmailIcon/>}
-                                                    onClick={async () => await sendEmail(reservation._id)}/></Td>
+                                                    onClick={() => sendEmail(reservation._id, reservation.userId)}/></Td>
                                 </Tr>
                             </Tbody>)
                     }) : <Text textAlign="center">Žádné rezervace</Text>}

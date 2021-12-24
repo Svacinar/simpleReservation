@@ -29,6 +29,7 @@ const errorHandler = require('../infrastructure/errors/errorHandler');
 const {addNewSession} = require("../use_case/addNewSession");
 const {getAllSessions} = require("../use_case/getAllSessions");
 const {deleteSession} = require("../use_case/deleteSession");
+const {sendEmail} = require("../use_case/sendEmail");
 
 app.use(express.json());
 
@@ -121,6 +122,15 @@ app.delete('/reservation/:id', verifyToken, async (req, res, next) => {
     const reservationId = req.params.id
     await deleteReservation(reservationId, reservationRepository, sessionRepository, mailService, req.user);
     res.status(204).send();
+})
+
+app.post('/email', verifyToken, async (req, res, next) => {
+    try {
+        await sendEmail(mailService, req.body.emailData, req.user);
+        res.send(204)
+    } catch (e) {
+        next(e)
+    }
 })
 
 app.get('*', (req, res) => {
