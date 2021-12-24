@@ -17,7 +17,7 @@ import { useDisclosure } from "@chakra-ui/hooks";
 import axios from 'axios';
 import {useAuth} from "../../context/auth-context";
 
-const Reservation = ({ setIsFinished, setIsError }) => {
+const NewReservation = ({ setIsFinished, setIsError }) => {
     const {user} = useAuth()
     const [isStarted, setIsStarted] = useState(false);
     const [startDate, setStartDate] = useState(new Date());
@@ -126,4 +126,4 @@ const Reservation = ({ setIsFinished, setIsError }) => {
     );
 }
 
-export default Reservation;
+export default NewReservation;

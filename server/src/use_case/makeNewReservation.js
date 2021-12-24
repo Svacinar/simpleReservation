@@ -1,5 +1,5 @@
 const makeNewReservation = require('../entity/Reservation');
-const makeNewEmail = require('../entity/Email');
+const {makeNewEmail} = require("../entity/Email");
 const dayjs = require("dayjs");
 const BaseError = require('../infrastructure/errors/BaseError');
 
