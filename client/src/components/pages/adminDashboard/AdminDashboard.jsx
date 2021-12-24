@@ -1,24 +1,43 @@
 import axios from "axios";
-import {
-    Box,
-    Button, Flex, FormControl, FormLabel, Grid,
-    Heading,
-    IconButton, Input, Spacer,
-    Stack,
-    Table,
-    TableCaption,
-    Tbody,
-    Td, Text,
-    Th,
-    Thead,
-    Tr
-} from "@chakra-ui/react";
+import {Box, Button, Flex, FormControl, FormLabel, Grid, Heading, Input, Spacer, Stack} from "@chakra-ui/react";
 import {useEffect, useState} from "react";
 import dayjs from "dayjs";
-import {CloseIcon, EmailIcon} from "@chakra-ui/icons";
+import {ReservationsTables, UpcomingReservationTable} from "../../UI/ReservationsTables";
 import {useAuth} from "../../context/auth-context";
 import EmailModal from "../../modals/EmailModal";
 import {useDisclosure} from "@chakra-ui/hooks";
+import {AllSessionsTable} from "./AllSessionsTable";
+
+const DashboardHeader = props => <Grid p={5} justifyContent="center" alignItems="flex-end"
+                                       templateColumns="repeat(3, 1fr)" gap={6}
+                                       borderBottom="1px solid black">
+    <Spacer/>
+    <Heading textAlign="center" justifyContent="center">Rezervační správce</Heading>
+    <Box>
+        <Button onClick={props.onClick}>Admin logout</Button>
+    </Box>
+</Grid>;
+
+const AddNewSlot = props => <Flex p={5} flexDirection="row" justifyContent="center" alignItems="flex-end"
+                                  borderBottom="1px solid black">
+    <Box mr="5">
+        <FormControl margin="10px">
+            <FormLabel>Datum</FormLabel>
+            <Input value={props.value} placeholder="Datum volného termínu" type="datetime-local"
+                   onChange={props.onChange}/>
+        </FormControl>
+    </Box>
+    <Box mr="5">
+        <FormControl margin="10px">
+            <FormLabel>Preference</FormLabel>
+            <Input placeholder="Parametry termínu" type="text"
+                   onChange={props.onChange1}/>
+        </FormControl>
+    </Box>
+    <Box margin="10px">
+        <Button onClick={props.onClick}>Vytvořit nový termín</Button>
+    </Box>
+</Flex>;
 
 const AdminDashboard = (props) => {
     const {logout} = useAuth()
@@ -87,13 +106,13 @@ const AdminDashboard = (props) => {
         getSessions();
     }, [reload]);
 
-    const sendEmail = (_id, email) => {
+    const openEmailModal = (_id, email) => {
         setEmailHeader('Zpráva o rezervaci ' + _id);
         setEmail(email)
         onOpen();
     };
 
-    const handleNewSlotButton = async () => {
+    const handleAddNewSlot = async () => {
         await axios.post('/session', {
             session: {
                 dateTime: newSlot,
@@ -120,7 +139,7 @@ const AdminDashboard = (props) => {
         setReload(true)
     };
 
-    const handleEmailSend = async () => {
+    const handleSendEmail = async () => {
         await axios.post('/email', {
             emailData: {
                 email: email,
@@ -145,114 +164,29 @@ const AdminDashboard = (props) => {
                 subject={emailHeader}
                 setSubject={setEmailHeader}
                 setText={setEmailText}
-                onClickHandler={handleEmailSend}
+                onClickHandler={handleSendEmail}
             />
             <Stack justifyContent='center'>
-                <Grid p={5} justifyContent="center" alignItems='flex-end' templateColumns='repeat(3, 1fr)' gap={6} borderBottom='1px solid black'>
-                    <Spacer/>
-                    <Heading textAlign="center" justifyContent="center">Rezervační správce</Heading>
-                    <Box>
-                        <Button onClick={logout}>Admin logout</Button>
-                    </Box>
-                </Grid>
-                <Flex p={5} flexDirection='row' justifyContent='center' alignItems='flex-end' borderBottom='1px solid black'>
-                    <Box mr='5'>
-                        <FormControl margin="10px">
-                            <FormLabel>Datum</FormLabel>
-                            <Input value={newSlot} placeholder='Datum volného termínu' type='datetime-local' onChange={(e) => setNewSlot(e.target.value)}/>
-                        </FormControl>
-                    </Box>
-                    <Box mr='5'>
-                        <FormControl margin="10px">
-                            <FormLabel>Preference</FormLabel>
-                            <Input placeholder='Parametry termínu' type='text' onChange={(e) => setNewSlotPreference(e.target.value)}/>
-                        </FormControl>
-                    </Box>
-                    <Box margin='10px'>
-                        <Button onClick={handleNewSlotButton}>Vytvořit nový termín</Button>
-                    </Box>
-
-
-                </Flex>
-                <Table>
-                    <TableCaption placement='top'>Přehled všech nadcházejících rezervací</TableCaption>
-                    <Thead>
-                        <Tr>
-                            <Th>#</Th>
-                            <Th>Datum rezervace</Th>
-                            <Th>Uživatelské jméno</Th>
-                            <Th>Detaily</Th>
-                            <Th>Zrušit rezervaci</Th>
-                            <Th>Kontaktovat</Th>
-                        </Tr>
-                    </Thead>
-                    {upcomingReservations.length ? upcomingReservations.map((reservation, key) => {
-                        return (
-                            <Tbody key={key}>
-                                <Tr>
-                                    <Td>{key + 1}</Td>
-                                    <Td>{dayjs(reservation.dateTime).format("DD.MM.YYYY HH:mm")}</Td>
-                                    <Td>{reservation.userId}</Td>
-                                    <Td>{reservation.preferences.join(", ")}</Td>
-                                    <Td><IconButton isLoading={isWorking} aria-label='Cancel reservation'
-                                                    icon={<CloseIcon/>}
-                                                    onClick={async () => await cancelReservation(reservation._id)}/></Td>
-                                    <Td><IconButton isLoading={isWorking} aria-label='Send email'
-                                                    icon={<EmailIcon/>}
-                                                    onClick={() => sendEmail(reservation._id, reservation.userId)}/></Td>
-                                </Tr>
-                            </Tbody>)
-                    }) : <Text textAlign="center">Žádné rezervace</Text>}
-                </Table>
-                <Table>
-                    <TableCaption placement='top'>Přehled všech vytvořených termínů</TableCaption>
-                    <Thead>
-                        <Tr>
-                            <Th>#</Th>
-                            <Th>Datum termínu</Th>
-                            <Th>Detaily</Th>
-                            <Th>Zrušit termín</Th>
-                        </Tr>
-                    </Thead>
-                    {allSessions.length ? allSessions.map((session, key) => {
-                        return (
-                            <Tbody key={key}>
-                                <Tr>
-                                    <Td>{key + 1}</Td>
-                                    <Td>{dayjs(session.dateTime).format("DD.MM.YYYY HH:mm")}</Td>
-                                    <Td>{session.preferences.join(", ")}</Td>
-                                    <Td>{dayjs(session.dateTime).isAfter(dayjs()) ? <IconButton isLoading={isWorking} aria-label='Cancel session'
-                                                                                                 icon={<CloseIcon/>}
-                                                                                                 onClick={async () => await cancelSession(session._id)}/> : '-'}
-                                    </Td>
-                                </Tr>
-                            </Tbody>)
-                    }) : <Text textAlign="center">Žádný vytvořený termín</Text>}
-                </Table>
-                <Table>
-                    <TableCaption placement='top'>Přehled všech předchozích rezervací</TableCaption>
-                    <Thead>
-                        <Tr>
-                            <Th>#</Th>
-                            <Th>Datum rezervace</Th>
-                            <Th>Uživatelské jméno</Th>
-                            <Th>Detaily</Th>
-                        </Tr>
-                    </Thead>
-                    {previousReservations.length ? previousReservations.map((reservation, key) => {
-                        return (
-                            <Tbody key={key}>
-                                <Tr>
-                                    <Td>{key + 1}</Td>
-                                    <Td>{dayjs(reservation.dateTime).format("DD.MM.YYYY HH:mm")}</Td>
-                                    <Td>{reservation.userId}</Td>
-                                    <Td>{reservation.preferences.join(", ")}</Td>
-                                </Tr>
-                            </Tbody>)
-                    }) : <Text textAlign="center">Žádné rezervace</Text>}
-                </Table>
-
-
+                <DashboardHeader onClick={logout}/>
+                <AddNewSlot value={newSlot} onChange={(e) => setNewSlot(e.target.value)}
+                            onChange1={(e) => setNewSlotPreference(e.target.value)} onClick={handleAddNewSlot}/>
+                <UpcomingReservationTable
+                    upcomingReservations={upcomingReservations}
+                    admin
+                    sendEmail={openEmailModal}
+                    isWorking={isWorking}
+                    cancelReservation={cancelReservation}
+                />
+                <AllSessionsTable
+                    allSessions={allSessions}
+                    isWorking={isWorking}
+                    cancelSession={cancelSession}
+                />
+                <ReservationsTables
+                    previousReservations={previousReservations}
+                    isWorking={isWorking}
+                    cancelReservation={cancelReservation}
+                />
             </Stack>
         </main>
     )

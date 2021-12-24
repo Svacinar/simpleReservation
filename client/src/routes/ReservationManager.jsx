@@ -4,8 +4,7 @@ import ReservationsList from "../components/pages/reservationManagement/Reservat
 import {useEffect} from "react";
 import AdminDashboard from "../components/pages/adminDashboard/AdminDashboard";
 
-
-const PreviousReservations = (props) => {
+const ReservationManager = (props) => {
     const {user, isError, decodeToken} = useAuth();
     useEffect(() => {
         const token = localStorage.getItem('token')
@@ -17,4 +16,4 @@ const PreviousReservations = (props) => {
     return user.isAdmin ? <AdminDashboard /> : <ReservationsList />
 }
 
-export default PreviousReservations
+export default ReservationManager

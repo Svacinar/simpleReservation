@@ -1,4 +1,4 @@
-const makeNewEmail = require('../entity/Email');
+const {makeNewEmail} = require("../entity/Email");
 const BaseError = require("../infrastructure/errors/BaseError");
 const dayjs = require("dayjs");
 
