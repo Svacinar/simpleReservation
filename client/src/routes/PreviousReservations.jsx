@@ -2,6 +2,7 @@ import {useAuth} from "../components/context/auth-context";
 import Login from "../components/pages/login/Login";
 import ReservationsList from "../components/pages/reservationManagement/ReservationsList";
 import {useEffect} from "react";
+import AdminDashboard from "../components/pages/adminDashboard/AdminDashboard";
 
 
 const PreviousReservations = (props) => {
@@ -12,7 +13,8 @@ const PreviousReservations = (props) => {
     }, [])
 
     if (isError) alert('Bad credentials, please try again')
-
-    return user ? <ReservationsList /> : <Login />
+    if (!user) return <Login />
+    return user.isAdmin ? <AdminDashboard /> : <ReservationsList />
 }
+
 export default PreviousReservations

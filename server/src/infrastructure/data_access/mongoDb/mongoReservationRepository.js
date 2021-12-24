@@ -3,7 +3,6 @@ const makeReservationModel = require('./models/reservation');
 module.exports = ({connection}) => {
     const ReservationModel = makeReservationModel(connection);
     const getAllReservations = async () => {
-        // TODO check user role
         return await ReservationModel.find().exec();
     }
     const insertReservation = async (reservation) => {

@@ -27,6 +27,8 @@ const verifyToken = require('../drivers/middleware/verifyToken')(cryptography);
 const mailService = new Mailer();
 const errorHandler = require('../infrastructure/errors/errorHandler');
 const {addNewSession} = require("../use_case/addNewSession");
+const {getAllSessions} = require("../use_case/getAllSessions");
+const {deleteSession} = require("../use_case/deleteSession");
 
 app.use(express.json());
 
@@ -50,6 +52,24 @@ app.get('/free-slots', async (req, res, next) => {
     }
 })
 
+app.get('/session', verifyToken, async (req, res, next) => {
+    try {
+        const result = await getAllSessions(sessionRepository, req.user)
+        res.status(200).send(result)
+    } catch (e) {
+        next(e)
+    }
+})
+
+app.delete('/session/:id', verifyToken, async(req, res, next) => {
+    try {
+        await deleteSession(sessionRepository, req.params.id, req.user);
+        res.status(204).send();
+    } catch (e) {
+        next(e);
+    }
+})
+
 app.post('/session', verifyToken, async (req, res, next) => {
     try {
         await addNewSession({
@@ -64,7 +84,6 @@ app.post('/session', verifyToken, async (req, res, next) => {
 })
 
 app.post('/reservation', async (req, res, next) => {
-    //TODO overit token -> middleware
     const reservation = req.body;
     try {
         await makeNewReservation(reservationRepository, sessionRepository, reservation, mailService);
@@ -100,7 +119,7 @@ app.post('/login', async (req, res, next) => {
 
 app.delete('/reservation/:id', verifyToken, async (req, res, next) => {
     const reservationId = req.params.id
-    await deleteReservation(reservationId, reservationRepository, sessionRepository, mailService);
+    await deleteReservation(reservationId, reservationRepository, sessionRepository, mailService, req.user);
     res.status(204).send();
 })
 

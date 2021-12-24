@@ -32,10 +32,16 @@ module.exports = ({connection}) => {
         const sessionObject = new Session(session)
         await sessionObject.save();
     }
+    const deleteSession = async (sessionId) => {
+        return await Session.deleteOne({
+            _id: sessionId,
+        }).exec();
+    }
     return {
         getAvailableSessions,
         insertSession,
         getSessionByParameters,
         setSessionParameter,
+        deleteSession,
     }
 }

@@ -47,7 +47,7 @@ const MenuLinks = (props) => {
                  pt={[4, 4, 8, 0]}
              >
                  <MenuItem to="/">Nová rezervace</MenuItem>
-                 <MenuItem to="/my-reservations" isLast>Předchozí rezervace</MenuItem>
+                 <MenuItem to="/my-reservations" isLast>Správce rezervací</MenuItem>
                  <Menu>
                      <MenuButton as={Button} onClick={onOpen}>
                          Pomoc
