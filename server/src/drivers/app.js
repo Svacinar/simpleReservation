@@ -22,7 +22,8 @@ const reservationRepository = require('../infrastructure/data_access/mongoDb/mon
 const userRepository = require('../infrastructure/data_access/mongoDb/mongoUserRepository')({connection: mongoConnection})
 
 const cryptography = require('../infrastructure/cryptography/cryptography')(process.env.JWTPRIVATEKEY)
-const verifyToken = require('../drivers/middleware/verifyToken')(cryptography);
+const verifyToken = require('./middleware/verifyToken')(cryptography);
+const {reqResMiddleware} = require("./middleware/reqResMiddleware");
 
 const mailService = new Mailer();
 const errorHandler = require('../infrastructure/errors/errorHandler');
@@ -34,6 +35,8 @@ const {sendEmail} = require("../use_case/sendEmail");
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, '../../../client/build/'))); // TODO testing?
+
+app.use(reqResMiddleware({logger: console}));
 
 app.get('/free-slots', async (req, res, next) => {
     const fromDate = req.query.from;
