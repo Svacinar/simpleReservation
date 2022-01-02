@@ -7,7 +7,8 @@ module.exports = ({connection}) => {
     }
     const insertReservation = async (reservation) => {
         const reservationObject = new ReservationModel(reservation);
-        await reservationObject.save();
+        const result = await reservationObject.save();
+        return {insertId: result._doc._id.toString()}
     }
     const getReservationsForUser = async (userId) => {
         return await ReservationModel.find({

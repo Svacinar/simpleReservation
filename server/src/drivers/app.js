@@ -65,6 +65,16 @@ app.get('/session', verifyToken, async (req, res, next) => {
     }
 })
 
+app.get('/deleteToken/:id', async (req, res, next) => {
+    const token = req.params.id; //TODO generovat do mailu uuid, verify via redis
+    try {
+       await deleteReservation(token, reservationRepository, sessionRepository, mailService, {});
+       res.status(204).send()
+    } catch (e) {
+        next(e)
+    }
+})
+
 app.delete('/session/:id', verifyToken, async(req, res, next) => {
     try {
         await deleteSession(sessionRepository, req.params.id, req.user);

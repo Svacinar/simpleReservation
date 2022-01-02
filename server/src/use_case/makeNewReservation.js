@@ -16,7 +16,7 @@ module.exports = async (reservationRepository = {}, sessionRepository, reservati
         dateTime: reservationData.selectedDateTime,
     });
 
-    await reservationRepository.insertReservation(reservation);
+    const {insertId} = await reservationRepository.insertReservation(reservation);
 
     await sessionRepository.setSessionParameter({
         dateTime: reservation.dateTime,
@@ -27,7 +27,9 @@ module.exports = async (reservationRepository = {}, sessionRepository, reservati
 
     const email = makeNewEmail({
         subject: "Potvrzení rezervace ✔",
-        text: `Vaše rezervace na ${dayjs(reservationData.selectedDateTime).format('DD.MM.YYYY HH:mm')} byla přijata. Děkujeme`,
+        text: `Vaše rezervace na ${dayjs(reservationData.selectedDateTime).format('DD.MM.YYYY HH:mm')} byla přijata. 
+        Zrušit rezervaci lze na ${process.env.APP_BASE_URL}/deleteToken/${insertId}
+        Děkujeme`,
         sender: process.env.EMAIL_SENDER,
         receiver: [
             process.env.DEFAULT_EMAIL,
