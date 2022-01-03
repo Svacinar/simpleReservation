@@ -1,28 +1,25 @@
 import { Box, Stack, Text, Radio, RadioGroup, Heading } from '@chakra-ui/react';
-import dayjs from 'dayjs';
+
 function AvailableSpots(props) {
-    const { saunaDate, spots, onClickHandler, saunaDateTime } = props;
+    const { spots, onClickHandler } = props;
     const RenderAvailableDateTimes = () => {
         return (
-            <>
-            <Text my={2} color="gray.500">
-                Dostupné časy:
-            </Text>
-            <RadioGroup onChange={onClickHandler} >
-                <Stack spacing={4}>
-                    {spots.map((spot, id) => {
-                        return <Radio value={spot}>{spot}</Radio>
-                    })
-                    }
-                </Stack>
-            </RadioGroup>
-            </>
+            <Box textAlign="center">
+                <RadioGroup onChange={onClickHandler} >
+                    <Stack spacing={4}>
+                        {spots.map((spot, id) => {
+                            return <Radio key={id} value={spot}>{spot}</Radio>
+                        })
+                        }
+                    </Stack>
+                </RadioGroup>
+            </Box>
         )
     }
     return (
-        <Box w={["300px", "300px", "300px"]} h={["300px", "300px", "300px"]} m={4} p={4} boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2)">
-            <Heading p={2} size='sm'>
-                Volné časy pro datum: {dayjs(saunaDate).format('DD.MM.YYYY')}
+        <Box w={["300px", "300px", "300px"]} h={["350px", "350px", "350px"]} m={2} boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2)" textAlign="center">
+            <Heading p={4} size='md'>
+                Dostupné časy
             </Heading>
             <Stack
                 align={{ base: "center", md: "stretch" }}

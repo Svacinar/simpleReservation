@@ -4,15 +4,15 @@ import {
 function AvailableSpots(props) {
     const { preferences, setPreferences } = props;
     return (
-        <Box w={["300px", "300px", "300px"]} h={["300px", "300px", "300px"]} m={2} p={4} boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2)">
+        <Box w={["300px", "300px", "300px"]} h={["350px", "350px", "350px"]} m={2} boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2)" textAlign="center">
+            <Heading size='md' p={4}>Vyberte možnosti</Heading>
             <Stack
                 align={{ base: "center", md: "stretch" }}
                 textAlign={{ base: "center", md: "left" }}
                 mt={{ base: 4, md: 0 }}
                 ml={{ md: 6 }}
             >
-                <Heading size='sm ' p={2}>Vyberte možnosti</Heading>
-                {preferences.length ? preferences.map(preference => <Checkbox onChange={(e) => setPreferences([preference, e.target.checked])}>{preference}</Checkbox>) : <Text>No preferences available</Text>}
+                {preferences.length ? preferences.map((preference, id) => <Checkbox key={id} onChange={(e) => setPreferences([preference, e.target.checked])}>{preference}</Checkbox>) : <Text>No preferences available</Text>}
             </Stack>
         </Box>
     )
