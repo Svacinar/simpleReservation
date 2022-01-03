@@ -7,6 +7,16 @@ import {AuthProvider} from "./components/context/auth-context";
 
 function App() {
     return (
+        <div style={
+            {
+                backgroundPosition: 'center',
+                backgroundSize: 'cover',
+                backgroundImage: `linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('https://upload.wikimedia.org/wikipedia/commons/c/cd/Hradec_Králové%2C_Moravské_Předměst%C3%AD_a_centrum_z_Husovy_ulice%2C_detail.jpg')`,
+                backgroundRepeat: 'no-repeat',
+                width: '100vw',
+                height: '100vh',
+            }
+        }>
             <AuthProvider>
                 <BrowserRouter>
                     <Header />
@@ -17,6 +27,8 @@ function App() {
                     </Routes>
                 </BrowserRouter>
             </AuthProvider>
+        </div>
+
     );
 }
 

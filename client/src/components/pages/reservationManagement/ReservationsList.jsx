@@ -1,9 +1,8 @@
 import axios from "axios";
-import {Stack} from "@chakra-ui/react";
+import {Box, Button, Heading, Stack} from "@chakra-ui/react";
 import {useEffect, useState} from "react";
 import dayjs from "dayjs";
 import {useAuth} from "../../context/auth-context";
-import {ReservationManagerHeader} from "../../UI/ReservationManagerHeader";
 import {ReservationsTables, UpcomingReservationTable} from "../../UI/ReservationsTables";
 
 const ReservationsList = (props) => {
@@ -52,8 +51,11 @@ const ReservationsList = (props) => {
     }, [reload]);
     return (
         <main style={{padding: "1rem 0"}}>
-            <Stack justifyContent={"center"}>
-                <ReservationManagerHeader onClick={logout}/>
+            <Stack justifyContent="center" textAlign="center">
+                <Heading background="white" padding={4} margin="0% 30% 0% 30%" borderRadius={8}>Management rezervací </Heading>
+                <Box>
+                    <Button onClick={logout}>Odhlásit se</Button>
+                </Box>
                 <UpcomingReservationTable
                     upcomingReservations={upcomingReservations}
                     isWorking={isWorking}

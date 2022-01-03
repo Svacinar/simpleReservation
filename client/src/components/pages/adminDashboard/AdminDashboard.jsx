@@ -1,5 +1,5 @@
 import axios from "axios";
-import {Box, Button, Flex, FormControl, FormLabel, Grid, Heading, Input, Spacer, Stack} from "@chakra-ui/react";
+import {Box, Button, Flex, FormControl, FormLabel, Heading, Input, Stack} from "@chakra-ui/react";
 import {useEffect, useState} from "react";
 import dayjs from "dayjs";
 import {ReservationsTables, UpcomingReservationTable} from "../../UI/ReservationsTables";
@@ -8,18 +8,15 @@ import EmailModal from "../../modals/EmailModal";
 import {useDisclosure} from "@chakra-ui/hooks";
 import {AllSessionsTable} from "./AllSessionsTable";
 
-const DashboardHeader = props => <Grid p={5} justifyContent="center" alignItems="flex-end"
-                                       templateColumns="repeat(3, 1fr)" gap={6}
-                                       borderBottom="1px solid black">
-    <Spacer/>
-    <Heading textAlign="center" justifyContent="center">Rezervační správce</Heading>
-    <Box>
-        <Button onClick={props.onClick}>Admin logout</Button>
-    </Box>
-</Grid>;
-
-const AddNewSlot = props => <Flex p={5} flexDirection="row" justifyContent="center" alignItems="flex-end"
-                                  borderBottom="1px solid black">
+const AddNewSlot = props => (
+    <Flex
+        p={5}
+        background="white"
+        borderRadius={8}
+        flexDirection="row"
+        justifyContent="center"
+        alignItems="flex-end"
+    >
     <Box mr="5">
         <FormControl margin="10px">
             <FormLabel>Datum</FormLabel>
@@ -37,7 +34,7 @@ const AddNewSlot = props => <Flex p={5} flexDirection="row" justifyContent="cent
     <Box margin="10px">
         <Button onClick={props.onClick}>Vytvořit nový termín</Button>
     </Box>
-</Flex>;
+</Flex>);
 
 const AdminDashboard = (props) => {
     const {logout} = useAuth()
@@ -166,8 +163,11 @@ const AdminDashboard = (props) => {
                 setText={setEmailText}
                 onClickHandler={handleSendEmail}
             />
-            <Stack justifyContent='center'>
-                <DashboardHeader onClick={logout}/>
+            <Stack justifyContent='center' textAlign="center">
+                <Heading background="white" padding={4} margin="0% 30% 0% 30%" borderRadius={8}>Rezervační správce</Heading>
+                <Box>
+                    <Button onClick={logout}>Admin logout</Button>
+                </Box>
                 <AddNewSlot value={newSlot} onChange={(e) => setNewSlot(e.target.value)}
                             onChange1={(e) => setNewSlotPreference(e.target.value)} onClick={handleAddNewSlot}/>
                 <UpcomingReservationTable

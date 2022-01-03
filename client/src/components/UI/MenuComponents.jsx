@@ -68,7 +68,9 @@ const HeaderContainer = ({children, ...props}) => {
             justify="space-between"
             wrap="wrap"
             w="100%"
-            borderBottom="3px solid black"
+            borderBottom="1px solid black"
+            background="white"
+            boxShadow="0 4px 8px 0 rgba(0, 0, 0, 0.2)"
             textTransform="uppercase"
             {...props}
         >
