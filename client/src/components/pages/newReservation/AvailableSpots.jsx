@@ -1,11 +1,11 @@
 import { Box, Stack, Text, Radio, RadioGroup, Heading } from '@chakra-ui/react';
 
 function AvailableSpots(props) {
-    const { spots, onClickHandler } = props;
+    const { spots, onClickHandler, saunaDateTime } = props;
     const RenderAvailableDateTimes = () => {
         return (
             <Box textAlign="center">
-                <RadioGroup onChange={onClickHandler} >
+                <RadioGroup onChange={onClickHandler} value={saunaDateTime}>
                     <Stack spacing={4}>
                         {spots.map((spot, id) => {
                             return <Radio key={id} value={spot}>{spot}</Radio>
